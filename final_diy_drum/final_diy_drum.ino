@@ -37,7 +37,10 @@ class PiezoMIDIOutput : public MIDIOutputElement {
     int piezoValue = analogRead(piezoPin);
     if (piezoValue > 80) {
       // Map piezo value to MIDI velocity
-      uint8_t velocity = map(piezoValue, 0, 300, 32, 127);  
+      uint8_t velocity = map(piezoValue, 0, 300, 64, 127);  
+      if (velocity > 127) {
+        velocity = 127;
+      }
 
       // LED ON
       digitalWrite(ledPin, HIGH);
@@ -72,33 +75,33 @@ USBMIDI_Interface midi;
 
 // Instantiate CCPotentiometer object
 CCPotentiometer potentiometer {
-  A5,                                   // Analog pin connected to potentiometer
+  A1,                                   // Analog pin connected to potentiometer
   {MIDI_CC::Channel_Volume, Channel_1}, // Channel volume of channel 1
 };
 
 // Instantiate PiezoMIDIOutput object
-PiezoMIDIOutput piezo1 {
-  A1,                       // Piezo sensor on analog pin A1
-  {36, Channel_1},          // Note C1 - Kick    
-  2                         // LED pin 2    
-};
-
-PiezoMIDIOutput piezo2 {
+PiezoMIDIOutput piezoRight {
   A2,                       // Piezo sensor on analog pin A2
-  {38, Channel_1},          // Note D1 - Snare center
-  3                         // LED pin 3   
+  {38, Channel_1},          // Note D1 - Snare center 
+  5                         // LED pin 5   
 };
 
-PiezoMIDIOutput piezo3 {
+PiezoMIDIOutput piezoMiddleTop {
   A3,                       // Piezo sensor on analog pin A3
   {49, Channel_1},          // Note Db2 - Crash Left
   4                         // LED pin 4   
 };
 
-PiezoMIDIOutput piezo4 {
+PiezoMIDIOutput piezoMiddleBottom {
   A4,                       // Piezo sensor on analog pin A4
+  {36, Channel_1},          // Note C1 - Kick    
+  3                         // LED pin 3    
+};
+
+PiezoMIDIOutput piezoLeft {
+  A5,                       // Piezo sensor on analog pin A5
   {42, Channel_1},          // Note Gb1 - Hi-hat foot close 
-  5                         // LED pin 5   
+  2                         // LED pin 2   
 };
 
 void setup() {
